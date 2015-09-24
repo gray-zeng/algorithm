@@ -23,6 +23,7 @@ public class BinaryInsertion extends SortModule {
             for (int j = i; j > lo; --j)
             {
                 a[j]  = a[j-1];
+                View(a,j,j-1);
             }
             a[lo] = v;
         }
@@ -31,7 +32,7 @@ public class BinaryInsertion extends SortModule {
 
     public static void main(String[] args)
     {
-        String[] a = test(1000);
+        String[] a = test(100);
         sort(a);
         assert isSorted(a);
         show(a);
