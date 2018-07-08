@@ -2,7 +2,7 @@
  * @Author: zengqinxiong 
  * @Date: 2018-07-01 11:59:05 
  * @Last Modified by: zengqionxiong
- * @Last Modified time: 2018-07-01 16:16:58
+ * @Last Modified time: 2018-07-08 15:30:01
  */
 #include "../util/array.h"
 
@@ -19,11 +19,9 @@ void shell(int *array, int n)
         // 进行按步长的插入排序
         for (int i = 1; i < n ; i += offset)
         {
-            for (int j = i; j >= offset && *(array + j) < *(array + j - offset); j -= offset)
+            for (int j = i; j >= offset && isLess(array, j, j-offset); j -= offset)
             {
-                int tmp = *(array + j);
-                *(array + j) = *(array + j - offset);
-                *(array + j - offset) = tmp;
+                swap(array, j, j - offset);
             }
         }
     }
@@ -37,11 +35,9 @@ void shellBook (int *array, int n)
     {
         for (int i = h; i < n; i++)
         {
-            for (int j = i; j >= h && *(array + j) < *(array + j - h); j -= h)
+            for (int j = i; j >= h && isLess(array, j, j - h); j -= h)
             {
-                int tmp = *(array + j);
-                *(array + j) = *(array + j - h);
-                *(array + j - h) = tmp;
+                swap(array, j, j-h);
             }
         }
         h /= 3;
