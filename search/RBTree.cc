@@ -168,7 +168,7 @@ Node* insert(Node* root, int val)
         nodeList.pop();
         currentParent = nodeList.top();
         // 从插入的父节点开始冒泡处理
-        // case 1:两个子节点都是红色
+        // case 1（2-3树）:两个子节点都是红色
         if (isRed(current->left) && isRed(current->right))
         {
             // if (val == 8) cout << "case 1" << endl;
@@ -176,6 +176,13 @@ Node* insert(Node* root, int val)
             reversal(current->right);
             reversal(current);
         }
+        // case 1（2-3-4树）:当前节点、兄弟节点和一个子节点都是红色
+        // if (currentParent != NULL && isRed(currentParent->left) && isRed(currentParent->right) && (isRed(current->left) || isRed(current->right)))
+        // {
+        //     reversal(currentParent->left);
+        //     reversal(currentParent->right);
+        //     reversal(currentParent);
+        // }
         // case 2:右节点为红
         else if (!isRed(current->left) && isRed(current->right))
         {
@@ -203,7 +210,90 @@ Node* insert(Node* root, int val)
 }
 
 /**
- * @brief 删除指定节点,todo 今晚操作
+ * @brief 23树的删除最小节点操作
+ *        保证左子树+根节点必定有3/4节点
+ * 
+ * @param root 
+ */
+Node* removeMin(Node* root)
+{
+    if (root == NULL) return root;
+    // 强行转化节点
+    if (!isRed(root->left))
+    {
+//         cout << "error" << endl;
+// traverse(root);
+//         cout << "error" << endl;
+        if (root->right == NULL || isBlack(root->right->left))
+        {
+            reversal(root->left);
+            reversal(root->right);
+        }
+        else
+        {
+            Node *newRoot = root->right->left, *rootRight = root->right;
+            newRoot->isRed = false;
+            root->left->isRed = true;
+            root->right = newRoot->left;
+            rootRight->left = newRoot->right;
+            newRoot->left = root;
+            newRoot->right = rootRight;
+            root = newRoot;
+        }
+    }
+    // 删除最小节点
+    Node* current = root;
+    stack<Node*> nodeList;
+    nodeList.push(current);
+    // 这里的判断针对2-3-4树有些问题
+    while(current->left != NULL && current->left->left != NULL)
+    {
+        nodeList.push(current);
+        current = current->left;
+    }
+    if (current == root && current->left == NULL)
+    {
+        return current->right;
+    }
+    else
+    {
+        if (current->left->right != NULL) 
+            {
+                current->left = current->left->right;
+            }
+            else
+            {
+                current->left = NULL;
+            }
+    }
+//     cout << "inner" << endl;
+// traverse(root);
+//     cout << "inner" << endl;
+    // 还原
+    Node* currentParent;
+    bool hasTurn = false;
+    do {
+        currentParent = nodeList.top();
+        nodeList.pop();
+        if (isRed(current->left))
+        {
+            if (isRed(current->right))
+            {
+                reversal(current->right);
+            }
+            if (!hasTurn)
+            {
+                reversal(current->left);
+                hasTurn = true;
+            }
+        }
+        current = currentParent;
+    } while(!nodeList.empty() && currentParent != NULL);
+    return root;
+}
+
+/**
+ * @brief 删除指定节点
  * 
  * @param root 
  * @param val 
@@ -239,6 +329,7 @@ void remove(Node* root, int val)
     {
         current = nodeList.top();
         nodeList.pop();
+
     } 
     while (!nodeList.empty());
 }
@@ -251,6 +342,11 @@ int main(int argc, char const *argv[])
     root = insert(root, 1);
     root = insert(root, 9);
     root = insert(root, 8);
+    traverse(root);
+    root = removeMin(root);
+    root = removeMin(root);
+    root = removeMin(root);
+    cout << endl;
     traverse(root);
     return 0;
 }
