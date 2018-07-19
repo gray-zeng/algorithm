@@ -3,6 +3,8 @@
  * @Date: 2018-07-14 22:23:25 
  * @Last Modified by: zengqionxiong
  * @Last Modified time: 2018-07-15 16:10:22
+ * 
+ * @hrer 包含题目的优秀源码 https://github.com/jimmysuncpt/Algorithms/blob/master/src/com/jimmysun/algorithms/chapter3_3/RedBlackBST.java
  */
 
 #include <iostream>
@@ -294,6 +296,7 @@ Node* removeMin(Node* root)
 
 /**
  * @brief 删除指定节点
+ *        todo
  * 
  * @param root 
  * @param val 
